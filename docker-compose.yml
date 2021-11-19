@@ -1,0 +1,13 @@
+version: "3"
+services:
+  sagemaker-notebook-container:
+    image: halilagin/sagemaker-local-notebook:0.0.3
+    container_name: sagemaker-notebook-container
+    ports:
+      - 8888:8888
+    environment:
+      AWS_PROFILE: 'default-api'
+    volumes:
+      - ./.aws:/home/ec2-user/.aws:ro # For AWS Credentials
+      - ./aws-sagemaker:/home/ec2-user/SageMaker/aws-sagemaker 
+      - /var/run/docker.sock:/var/run/docker.sock:ro     # For Docker CLI

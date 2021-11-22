@@ -3,23 +3,11 @@ from tensorflow.keras import datasets, layers, models
 import argparse
 import os
 import numpy as np
-# import json
 
-import keras
-from keras import backend as K
-from keras.models import Sequential
-from keras.layers.normalization import BatchNormalization
-from keras.layers.convolutional import Conv2D
-from keras.layers.convolutional import MaxPooling2D
-from keras.layers.core import Activation
-from keras.layers.core import Flatten
-from keras.layers.core import Dropout
-from keras.layers.core import Dense
-#from keras.optimizers import SGD
-#from keras.callbacks import Callback, EarlyStopping
-from keras.preprocessing.image import ImageDataGenerator
-# from keras.optimizers import Adam
-# from keras.utils import multi_gpu_model
+from tensorflow.keras import backend as K
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Input, Dense,Conv2D,MaxPooling2D,Activation,Flatten,Dropout,BatchNormalization
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 #input 64x64
@@ -70,44 +58,6 @@ class LivenessNet:
 		# return the constructed network architecture
 		return model
 
-
-def _load_training_data(base_dir):
-    X_train = np.load(os.path.join(base_dir, 'training.npy'))
-    y_train = np.load(os.path.join(base_dir, 'training_label.npy'))
-    return X_train, y_train
-
-
-def _load_validation_data(base_dir):
-    X_val = np.load(os.path.join(base_dir, 'validation.npy'))
-    y_val = np.load(os.path.join(base_dir, 'validation_label.npy'))
-    return X_val, y_val
-
-
-# def _parse_args():
-#     parser = argparse.ArgumentParser()
-
-#     # Data, model, and output directories
-#     # model_dir is always passed in from SageMaker. By default this is a S3 path under the default bucket.
-#     parser.add_argument('--model_dir', type=str)
-#     parser.add_argument('--sm-model-dir', type=str, default=os.environ.get('SM_MODEL_DIR'))
-#     parser.add_argument('--train', type=str, default=os.environ.get('SM_CHANNEL_TRAINING'))
-#     parser.add_argument('--hosts', type=list, default=json.loads(os.environ.get('SM_HOSTS')))
-#     parser.add_argument('--current-host', type=str, default=os.environ.get('SM_CURRENT_HOST'))
-
-#     return parser.parse_known_args()
-
-
-# if __name__ == "__main__":
-#     args, unknown = _parse_args()
-
-#     train_data, train_labels = _load_training_data(args.train)
-#     eval_data, eval_labels = _load_validation_data(args.train)
-
-#     mdl = model(train_data, train_labels, eval_data, eval_labels)
-
-#     if args.current_host == args.hosts[0]:
-#         # save model to an S3 directory with version number '00000001'
-#         mdl.save(os.path.join(args.sm_model_dir, '000000001'), 'my_model.h5')
 if __name__ == '__main__':
     print ("tensorflow version:", tf.__version__)
     parser = argparse.ArgumentParser()
@@ -171,8 +121,8 @@ if __name__ == '__main__':
     
     # Convert class vectors to binary class matrices
     num_classes = 2
-    y_train = keras.utils.to_categorical(y_train, num_classes)
-    y_val   = keras.utils.to_categorical(y_val, num_classes)
+    y_train = tf.keras.utils.to_categorical(y_train, num_classes)
+    y_val   = tf.keras.utils.to_categorical(y_val, num_classes)
 
 
     INIT_LR = (1e-5)/4
@@ -186,7 +136,7 @@ if __name__ == '__main__':
 
     print("[INFO] compiling model...")
     #configure the learning process
-    model.compile(loss=keras.losses.categorical_crossentropy, optimizer= optimizer, 
+    model.compile(loss=tf.keras.losses.categorical_crossentropy, optimizer= optimizer, 
         metrics=["accuracy"])
 
     datagen = ImageDataGenerator(
